@@ -4,5 +4,5 @@ import com.example.malar.todolists.model.Project
 
 interface ProjectInteraction {
     fun deleteProject(project: Project)
-    fun updateProject(project: Project)
+    fun selectProject(project: Project)
 }

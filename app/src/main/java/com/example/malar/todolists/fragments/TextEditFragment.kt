@@ -11,23 +11,20 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import com.example.malar.todolists.R
-import kotlinx.android.synthetic.main.text_edit_layout.*
-import org.w3c.dom.Text
-import java.util.zip.Inflater
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_TEXT = "text"
 
 class TextEditFragment : DialogFragment() {
-    private lateinit var text: String
+    private lateinit var actionType: String
     private var listener: OnTextEditListener? = null
     private lateinit var editText : EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            text = it.getString(ARG_TEXT)
+            actionType = it.getString(ARG_TEXT)
         }
     }
 
@@ -43,7 +40,7 @@ class TextEditFragment : DialogFragment() {
         editText = view.findViewById(R.id.editTaskTitleEditText)
         val okButton = view.findViewById<Button>(R.id.submitTextEditButton)
         okButton.setOnClickListener({
-            listener?.onTextEdit(editText.text.toString(), ADD_PROJECT)
+            listener?.onTextEdit(editText.text.toString(), actionType)
             dialog.cancel()
         })
         val cancelButton = view.findViewById<Button>(R.id.cancelTextEditButton)
@@ -54,7 +51,6 @@ class TextEditFragment : DialogFragment() {
         super.onAttach(context)
         if (context is OnTextEditListener) {
             listener = context
-            println("i'm called")
         } else {
             throw RuntimeException(context.toString() + " must implement OnTextEditListener")
         }
@@ -78,8 +74,6 @@ class TextEditFragment : DialogFragment() {
                     }
                 }
         const val ADD_PROJECT = "add project"
-        const val EDIT_PROJECT = "edit project"
         const val ADD_TASK = "add task"
-        const val EDIT_TASK = "edit task"
     }
 }

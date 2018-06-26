@@ -1,5 +1,6 @@
 package com.example.malar.todolists.adapters
 
+import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -14,10 +15,11 @@ class ProjectsAdapter(var projects: List<Project>, val projectInteraction: Proje
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view){
         lateinit var projectInteraction: ProjectInteraction
         var projectTitle: TextView = view.findViewById(R.id.projectTitle)
+        var projectItemLayout: ConstraintLayout = view.findViewById(R.id.projectItemLayout)
         constructor(view: View, prjctInteraction: ProjectInteraction) : this(view) {
             projectInteraction = prjctInteraction
-        }
 
+        }
     }
 
     fun updateProjects(prjcts: List<Project>){
@@ -38,6 +40,9 @@ class ProjectsAdapter(var projects: List<Project>, val projectInteraction: Proje
         val deleteButton = holder.view.findViewById<Button>(R.id.deleteProjectButton)
         deleteButton.setOnClickListener({
             projectInteraction.deleteProject(projects[position])
+        })
+        holder.itemView.setOnClickListener({
+            projectInteraction.selectProject(projects[position])
         })
     }
 }

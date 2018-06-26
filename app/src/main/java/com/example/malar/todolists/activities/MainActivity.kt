@@ -1,27 +1,28 @@
 package com.example.malar.todolists.activities
 
 import android.arch.lifecycle.Observer
-import android.support.v4.app.Fragment
 import android.arch.lifecycle.ViewModelProviders
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
-import android.view.View
 import android.widget.FrameLayout
 import com.example.malar.todolists.R
-import com.example.malar.todolists.db.Repository
 import com.example.malar.todolists.fragments.ProjectsFragment
+import com.example.malar.todolists.fragments.TaskInteraction
 import com.example.malar.todolists.fragments.TasksFragment
 import com.example.malar.todolists.fragments.TextEditFragment
 import com.example.malar.todolists.model.Project
+import com.example.malar.todolists.model.ToDoTask
 import com.example.malar.todolists.viewmodels.MainViewModel
 import com.example.malar.todolists.viewmodels.MainViewModelFactory
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 
 class MainActivity : FragmentActivity(), ProjectsFragment.OnProjectSelected, TextEditFragment.OnTextEditListener {
+    private val PROJECTS_TAG = "projects"
+    private val TASKS_TAG = "tasks"
     override fun onProjectSelected(id: Long) {
-
+        tasksFragment = TasksFragment.newInstance(id)
+        mainViewModel.selectedProjectId = id
+        replaceFragment(tasksFragment, TASKS_TAG)
     }
 
     private lateinit var mainViewModelFactory: MainViewModelFactory
@@ -36,8 +37,8 @@ class MainActivity : FragmentActivity(), ProjectsFragment.OnProjectSelected, Tex
         mainViewModel = ViewModelProviders.of(this, mainViewModelFactory).get(MainViewModel::class.java)
         projectsFragment = ProjectsFragment.newInstance()
         tasksFragment = TasksFragment.newInstance(-1)
-        changeFragment(savedInstanceState, projectsFragment)
-        mainViewModel.getProjects().observe(this, Observer<List<Project>> { words ->
+        addFragment(projectsFragment, PROJECTS_TAG)
+        mainViewModel.getTasks().observe(this, Observer<List<ToDoTask>> { words ->
             words?.forEach { word ->
                 println("${word.id} + ${word.title}")
             }
@@ -45,18 +46,25 @@ class MainActivity : FragmentActivity(), ProjectsFragment.OnProjectSelected, Tex
     }
 
     override fun onTextEdit(text: String, actionCode: String) {
-        when (actionCode){
-            TextEditFragment.ADD_PROJECT -> {mainViewModel.insertProject(Project(title = text))}
-
+        when (actionCode) {
+            TextEditFragment.ADD_PROJECT -> {
+                mainViewModel.insertProject(Project(title = text))
+            }
+            TextEditFragment.ADD_TASK -> {
+                mainViewModel.insertTask(ToDoTask(title = text, projectId = mainViewModel.selectedProjectId, isDone = false))
+            }
         }
     }
 
-    private fun changeFragment(savedInstanceState: Bundle?, fragment: Fragment) {
+    private fun addFragment(fragment: Fragment, tag: String) {
         if (findViewById<FrameLayout>(R.id.fragmentsContainer) != null) {
-            if (savedInstanceState != null) {
-                return
-            }
-            supportFragmentManager.beginTransaction().add(R.id.fragmentsContainer, fragment).commit()
+            supportFragmentManager.beginTransaction().add(R.id.fragmentsContainer, fragment, tag).commit()
+        }
+    }
+
+    private fun replaceFragment(fragment: Fragment, tag: String) {
+        if (findViewById<FrameLayout>(R.id.fragmentsContainer) != null) {
+            supportFragmentManager.beginTransaction().replace(R.id.fragmentsContainer, fragment, tag).addToBackStack(tag).commit()
         }
     }
 }

@@ -39,7 +39,8 @@ class ProjectsFragment : Fragment() {
         viewAdapter = ProjectsAdapter(
                 projects = emptyList(),
                 projectInteraction = object : ProjectInteraction {
-                    override fun updateProject(project: Project) {
+                    override fun selectProject(project: Project) {
+                        parentActivity?.onProjectSelected(project.id)
                     }
 
                     override fun deleteProject(project: Project) {
@@ -62,16 +63,9 @@ class ProjectsFragment : Fragment() {
         return view
     }
 
-    fun onProjectSelected(id: Long) {
-        (parentActivity
-                ?: throw NullPointerException("Expression 'parentActivity' must not be null"))
-                .onProjectSelected(id)
-    }
-
     fun addProject(view: View) {
-        val textEditFragment = TextEditFragment()
+        val textEditFragment = TextEditFragment.newInstance(TextEditFragment.ADD_PROJECT)
         textEditFragment.show(activity?.supportFragmentManager, "TextEdit")
-        mainViewModel.insertProject(Project(title = "hi, man"))
     }
 
     override fun onAttach(context: Context) {
@@ -89,7 +83,6 @@ class ProjectsFragment : Fragment() {
     }
 
     interface OnProjectSelected {
-        // TODO: Update argument type and name
         fun onProjectSelected(id: Long)
     }
 

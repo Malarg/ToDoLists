@@ -7,9 +7,6 @@ import android.arch.lifecycle.ViewModel
 import com.example.malar.todolists.db.Repository
 import com.example.malar.todolists.model.Project
 import com.example.malar.todolists.model.ToDoTask
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 
 
 class MainViewModel(application: Application) : ViewModel(){
@@ -17,6 +14,7 @@ class MainViewModel(application: Application) : ViewModel(){
     private val repository: Repository = Repository(application)
     private var projects: LiveData<List<Project>> = repository.getProjects()
     private var tasks: LiveData<List<ToDoTask>> = MutableLiveData()
+    var selectedProjectId: Long = -1
 
 
     fun getProjects() = projects
@@ -26,4 +24,10 @@ class MainViewModel(application: Application) : ViewModel(){
     fun insertProject(project: Project) = repository.insertProject(project)
 
     fun deleteProject(project: Project) = repository.removeProject(project)
+
+    fun updateTask(task: ToDoTask) = repository.updateTask(task)
+
+    fun deleteTask(task: ToDoTask) = repository.removeTask(task)
+
+    fun insertTask(task: ToDoTask) = repository.insertTask(task)
 }
