@@ -47,12 +47,13 @@ class TasksFragment : Fragment() {
             adapter = viewAdapter
         }
         mainViewModel.getTasks().observe(this, Observer<List<ToDoTask>> { tasks ->
-            viewAdapter.updateTasks(tasks!!.filter { it.id == projectId })
+            viewAdapter.updateTasks(tasks!!.filter { it.projectId == mainViewModel.selectedProjectId })
         })
         val addTaskFAB = view.findViewById<FloatingActionButton>(R.id.addTaskFAB)
-        addTaskFAB.setOnClickListener({ v ->
+        addTaskFAB.setOnClickListener { v ->
             addTask(v)
-        })
+        }
+        var value = mainViewModel.getTasks().value
         return view
     }
 

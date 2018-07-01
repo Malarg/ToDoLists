@@ -13,8 +13,8 @@ class MainViewModel(application: Application) : ViewModel(){
 
     private val repository: Repository = Repository(application)
     private var projects: LiveData<List<Project>> = repository.getProjects()
-    private var tasks: LiveData<List<ToDoTask>> = MutableLiveData()
-    var selectedProjectId: Long = -1
+    var selectedProjectId: Long = 1
+    private var tasks: LiveData<List<ToDoTask>> = repository.getTasks(selectedProjectId)
 
 
     fun getProjects() = projects

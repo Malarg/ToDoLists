@@ -1,16 +1,17 @@
 package com.example.malar.todolists.db
 
 import android.arch.persistence.room.Database
-import com.example.malar.todolists.model.Project
-import com.example.malar.todolists.model.ToDoTask
 import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.content.Context
+import com.example.malar.todolists.model.Project
+import com.example.malar.todolists.model.ToDoTask
 
 
-@Database(entities = [Project::class, ToDoTask::class], version = 1)
+@Database(entities = [Project::class, ToDoTask::class], version = 4)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun appDao(): AppDao
+    abstract fun projectsDao(): ProjectsDao
+    abstract fun tasksDao(): TasksDao
 
     companion object {
         private var databaseInstance: AppDatabase? = null
@@ -19,6 +20,7 @@ abstract class AppDatabase : RoomDatabase() {
                 if (databaseInstance == null) {
                     databaseInstance = Room.databaseBuilder(context.applicationContext,
                             AppDatabase::class.java, "app_database")
+                            .fallbackToDestructiveMigration()
                             .build()
 
                 }

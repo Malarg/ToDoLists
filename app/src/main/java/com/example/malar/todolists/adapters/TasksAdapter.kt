@@ -27,7 +27,7 @@ class TasksAdapter(var tasks: List<ToDoTask>, val taskInteraction: TaskInteracti
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val titleEditView = holder.view.findViewById<TextView>(R.id.taskTitle)
         titleEditView.text = tasks[position].title
-        val isDoneCheckBox = holder.view.findViewById<CheckBox>(R.id.taskTitle)
+        val isDoneCheckBox = holder.view.findViewById<CheckBox>(R.id.isDone)
         isDoneCheckBox.isChecked = tasks[position].isDone
         isDoneCheckBox.setOnCheckedChangeListener({ compoundButton: CompoundButton, b: Boolean ->
             tasks[position].isDone = b

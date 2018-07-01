@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import com.daimajia.swipe.SwipeLayout
 import com.example.malar.todolists.R
 import com.example.malar.todolists.fragments.ProjectInteraction
 import com.example.malar.todolists.model.Project
@@ -15,7 +16,6 @@ class ProjectsAdapter(var projects: List<Project>, val projectInteraction: Proje
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view){
         lateinit var projectInteraction: ProjectInteraction
         var projectTitle: TextView = view.findViewById(R.id.projectTitle)
-        var projectItemLayout: ConstraintLayout = view.findViewById(R.id.projectItemLayout)
         constructor(view: View, prjctInteraction: ProjectInteraction) : this(view) {
             projectInteraction = prjctInteraction
 
@@ -41,7 +41,7 @@ class ProjectsAdapter(var projects: List<Project>, val projectInteraction: Proje
         deleteButton.setOnClickListener({
             projectInteraction.deleteProject(projects[position])
         })
-        holder.itemView.setOnClickListener({
+        (holder.itemView as SwipeLayout).surfaceView.setOnClickListener({
             projectInteraction.selectProject(projects[position])
         })
     }
