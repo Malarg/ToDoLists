@@ -1,6 +1,5 @@
 package com.example.malar.todolists.adapters
 
-import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -13,23 +12,23 @@ import com.example.malar.todolists.fragments.ProjectInteraction
 import com.example.malar.todolists.model.Project
 
 class ProjectsAdapter(var projects: List<Project>, val projectInteraction: ProjectInteraction) : RecyclerView.Adapter<ProjectsAdapter.ViewHolder>() {
-    class ViewHolder(val view: View) : RecyclerView.ViewHolder(view){
-        lateinit var projectInteraction: ProjectInteraction
+    class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        private lateinit var projectInteraction: ProjectInteraction
         var projectTitle: TextView = view.findViewById(R.id.projectTitle)
-        constructor(view: View, prjctInteraction: ProjectInteraction) : this(view) {
-            projectInteraction = prjctInteraction
+
+        constructor(view: View, projectInteraction: ProjectInteraction) : this(view) {
+            this.projectInteraction = projectInteraction
 
         }
     }
 
-    fun updateProjects(prjcts: List<Project>){
-        projects = prjcts
+    fun updateProjects(projects: List<Project>) {
+        this.projects = projects
         notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.project_item_layout, parent, false)
-
         return ViewHolder(view, projectInteraction)
     }
 
@@ -38,12 +37,12 @@ class ProjectsAdapter(var projects: List<Project>, val projectInteraction: Proje
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.projectTitle.text = projects[position].title
         val deleteButton = holder.view.findViewById<Button>(R.id.deleteProjectButton)
-        deleteButton.setOnClickListener({
+        deleteButton.setOnClickListener {
             projectInteraction.deleteProject(projects[position])
-        })
-        (holder.itemView as SwipeLayout).surfaceView.setOnClickListener({
+        }
+        (holder.itemView as SwipeLayout).surfaceView.setOnClickListener {
             projectInteraction.selectProject(projects[position])
-        })
+        }
     }
 }
 

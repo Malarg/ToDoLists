@@ -24,6 +24,5 @@
         android:layout_marginRight="16dp"
         android:src="@android:drawable/ic_input_add"
         app:layout_constraintBottom_toBottomOf="@+id/projectsRecyclerView"
-        app:layout_constraintEnd_toEndOf="@+id/projectsRecyclerView"
-        android:onClick="addProject"/>
+        app:layout_constraintEnd_toEndOf="@+id/projectsRecyclerView"/>
 </android.support.constraint.ConstraintLayout>

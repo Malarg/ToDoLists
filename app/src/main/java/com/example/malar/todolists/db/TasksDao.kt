@@ -6,8 +6,8 @@ import com.example.malar.todolists.model.ToDoTask
 
 @Dao
 interface TasksDao {
-    @Query("SELECT * FROM toDoTasks")
-    fun loadTasksByProject() : LiveData<List<ToDoTask>>
+    @Query("SELECT * FROM toDoTasks WHERE projectId=:projectId")
+    fun loadTasksByProject(projectId: Long) : LiveData<List<ToDoTask>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertTasks(task: ToDoTask) : Long

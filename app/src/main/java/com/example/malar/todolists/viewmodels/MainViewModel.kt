@@ -12,14 +12,13 @@ import com.example.malar.todolists.model.ToDoTask
 class MainViewModel(application: Application) : ViewModel(){
 
     private val repository: Repository = Repository(application)
-    private var projects: LiveData<List<Project>> = repository.getProjects()
+    var projects: LiveData<List<Project>> = repository.getProjects()
     var selectedProjectId: Long = 1
-    private var tasks: LiveData<List<ToDoTask>> = repository.getTasks(selectedProjectId)
-
-
-    fun getProjects() = projects
-
-    fun getTasks() = tasks
+        set(value) {
+            field = value
+            tasks = repository.getTasks(value)
+        }
+    var tasks: LiveData<List<ToDoTask>> = repository.getTasks(selectedProjectId)
 
     fun insertProject(project: Project) = repository.insertProject(project)
 

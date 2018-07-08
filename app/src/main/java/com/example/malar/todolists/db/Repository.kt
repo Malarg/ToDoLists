@@ -2,7 +2,6 @@ package com.example.malar.todolists.db
 
 import android.app.Application
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MediatorLiveData
 import android.os.AsyncTask
 import com.example.malar.todolists.model.Project
 import com.example.malar.todolists.model.ToDoTask
@@ -15,16 +14,7 @@ class Repository(val application: Application) {
 
     fun getProjects() = projectsDao.loadAllProjects()
 
-    fun getTasks(projectId: Long): LiveData<List<ToDoTask>> {
-        return GetTaskAsyncTask(tasksDao).execute(projectId).get()
-    }
-
-    private class GetTaskAsyncTask(val dao: TasksDao) : AsyncTask<Long, Void, LiveData<List<ToDoTask>>>() {
-        override fun doInBackground(vararg id: Long?): LiveData<List<ToDoTask>> {
-            return dao.loadTasksByProject()
-        }
-
-    }
+    fun getTasks(projectId: Long): LiveData<List<ToDoTask>> =tasksDao.loadTasksByProject(projectId)
 
     fun insertTask(task: ToDoTask) {
         InsertTaskAsyncTask(tasksDao).execute(task)
@@ -32,7 +22,7 @@ class Repository(val application: Application) {
 
     private class InsertTaskAsyncTask(val dao: TasksDao) : AsyncTask<ToDoTask, Void, Void>() {
         override fun doInBackground(vararg tasks: ToDoTask?): Void? {
-            val id = dao.insertTasks(tasks[0]!!)
+            dao.insertTasks(tasks[0]!!)
             return null
         }
 

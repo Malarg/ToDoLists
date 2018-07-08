@@ -1,16 +1,16 @@
 package com.example.malar.todolists.adapters
 
-import android.content.Context
 import android.support.v7.widget.RecyclerView
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.CheckBox
+import android.widget.CompoundButton
+import android.widget.TextView
 import com.example.malar.todolists.R
-import com.example.malar.todolists.model.ToDoTask
-import android.text.Editable
-import android.widget.*
 import com.example.malar.todolists.fragments.TaskInteraction
+import com.example.malar.todolists.model.ToDoTask
 
 
 class TasksAdapter(var tasks: List<ToDoTask>, val taskInteraction: TaskInteraction) : RecyclerView.Adapter<TasksAdapter.ViewHolder>() {
@@ -27,19 +27,23 @@ class TasksAdapter(var tasks: List<ToDoTask>, val taskInteraction: TaskInteracti
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val titleEditView = holder.view.findViewById<TextView>(R.id.taskTitle)
         titleEditView.text = tasks[position].title
+
         val isDoneCheckBox = holder.view.findViewById<CheckBox>(R.id.isDone)
         isDoneCheckBox.isChecked = tasks[position].isDone
-        isDoneCheckBox.setOnCheckedChangeListener({ compoundButton: CompoundButton, b: Boolean ->
-            tasks[position].isDone = b
-            taskInteraction.updateTask(tasks[position])
-        })
+        isDoneCheckBox.setOnCheckedChangeListener(onCheckedChanged(position))
+
         val deleteTaskButton = holder.view.findViewById<Button>(R.id.deleteTaskButton)
-        deleteTaskButton.setOnClickListener({
-            taskInteraction.deleteTask(tasks[position])
-        })
+        deleteTaskButton.setOnClickListener { taskInteraction.deleteTask(tasks[position]) }
     }
 
-    fun updateTasks(newTasks: List<ToDoTask>){
+    private fun onCheckedChanged(position: Int): (CompoundButton, Boolean) -> Unit {
+        return { _: CompoundButton, isChecked: Boolean ->
+            tasks[position].isDone = isChecked
+            taskInteraction.updateTask(tasks[position])
+        }
+    }
+
+    fun updateTasks(newTasks: List<ToDoTask>) {
         tasks = newTasks
         notifyDataSetChanged()
     }

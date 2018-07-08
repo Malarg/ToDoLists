@@ -8,7 +8,7 @@ import com.example.malar.todolists.model.Project
 import com.example.malar.todolists.model.ToDoTask
 
 
-@Database(entities = [Project::class, ToDoTask::class], version = 4)
+@Database(entities = [Project::class, ToDoTask::class], version = 5)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun projectsDao(): ProjectsDao
     abstract fun tasksDao(): TasksDao

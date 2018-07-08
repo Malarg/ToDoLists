@@ -6,37 +6,46 @@ import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import butterknife.ButterKnife
 import com.example.malar.todolists.R
 import com.example.malar.todolists.adapters.ProjectsAdapter
 import com.example.malar.todolists.model.Project
 import com.example.malar.todolists.viewmodels.MainViewModel
 import com.example.malar.todolists.viewmodels.MainViewModelFactory
-import kotlinx.android.synthetic.main.fragment_tasks.*
 
 
 class ProjectsFragment : Fragment() {
     private var parentActivity: OnProjectSelected? = null
-    private lateinit var viewAdapter: ProjectsAdapter
-    private lateinit var viewManager: RecyclerView.LayoutManager
-    private lateinit var mainViewModel: MainViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_projects, container, false)
-        val mainViewModelFactory = MainViewModelFactory(activity!!.application)
-        mainViewModel = ViewModelProviders.of(activity!!, mainViewModelFactory).get(MainViewModel::class.java)
-        viewAdapter = ProjectsAdapter(
+        val activity = activity ?: throw NullPointerException("Expression 'activity' must not be null")
+        val mainViewModel = buildViewModel(activity)
+        val viewAdapter = buildAdapter(mainViewModel)
+
+        buildRecycleView(view, viewAdapter)
+        buildAddProjectFAB(view)
+
+        mainViewModel.projects.observe(this, Observer<List<Project>> { projects ->
+            viewAdapter.updateProjects(projects!!)
+        })
+
+        return view
+    }
+
+    private fun buildViewModel(activity: FragmentActivity) : MainViewModel {
+        val mainViewModelFactory = MainViewModelFactory(activity.application)
+        return ViewModelProviders.of(activity, mainViewModelFactory).get(MainViewModel::class.java)
+    }
+
+    private fun buildAdapter(mainViewModel: MainViewModel): ProjectsAdapter {
+        return ProjectsAdapter(
                 projects = emptyList(),
                 projectInteraction = object : ProjectInteraction {
                     override fun selectProject(project: Project) {
@@ -49,21 +58,23 @@ class ProjectsFragment : Fragment() {
 
                 }
         )
-        viewManager = LinearLayoutManager(this.context)
-        val recView = view.findViewById<RecyclerView>(R.id.projectsRecyclerView)
-        recView.adapter = viewAdapter
-        recView.layoutManager = viewManager
-        mainViewModel.getProjects().observe(this, Observer<List<Project>> { prjts ->
-            viewAdapter.updateProjects(prjts!!)
-        })
-        val addPrjctFAB = view.findViewById<FloatingActionButton>(R.id.addProjectFAB)
-        addPrjctFAB.setOnClickListener({v ->
-            addProject(v)
-        })
-        return view
     }
 
-    fun addProject(view: View) {
+    private fun buildRecycleView(view: View, viewAdapter: ProjectsAdapter) {
+        val viewManager = LinearLayoutManager(this.context)
+        val projectsRecycleView = view.findViewById<RecyclerView>(R.id.projectsRecyclerView)
+        projectsRecycleView.adapter = viewAdapter
+        projectsRecycleView.layoutManager = viewManager
+    }
+
+    private fun buildAddProjectFAB(view: View) {
+        val addProjectFAB = view.findViewById<FloatingActionButton>(R.id.addProjectFAB)
+        addProjectFAB.setOnClickListener { _ ->
+            addProject()
+        }
+    }
+
+    private fun addProject() {
         val textEditFragment = TextEditFragment.newInstance(TextEditFragment.ADD_PROJECT)
         textEditFragment.show(activity?.supportFragmentManager, "TextEdit")
     }

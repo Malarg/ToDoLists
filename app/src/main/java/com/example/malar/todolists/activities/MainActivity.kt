@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentActivity
 import android.widget.FrameLayout
 import com.example.malar.todolists.R
 import com.example.malar.todolists.fragments.ProjectsFragment
-import com.example.malar.todolists.fragments.TaskInteraction
 import com.example.malar.todolists.fragments.TasksFragment
 import com.example.malar.todolists.fragments.TextEditFragment
 import com.example.malar.todolists.model.Project
@@ -38,7 +37,7 @@ class MainActivity : FragmentActivity(), ProjectsFragment.OnProjectSelected, Tex
         projectsFragment = ProjectsFragment.newInstance()
         tasksFragment = TasksFragment.newInstance(-1)
         addFragment(projectsFragment, PROJECTS_TAG)
-        mainViewModel.getTasks().observe(this, Observer<List<ToDoTask>> { words ->
+        mainViewModel.tasks.observe(this, Observer<List<ToDoTask>> { words ->
             words?.forEach { word ->
                 println("${word.id} + ${word.title}")
             }
